@@ -309,3 +309,88 @@ x11() ; plot(as.raster(imagen)) ; title("Imagen original")
 
 writeJPEG(originalI,sprintf('data/imagenes/imagen_%d_comp_ppales.jpeg', cantidad_componentes_ppales))
 writeJPEG(original2I,sprintf('data/imagenes/imagen_%d_comp_ppales.jpeg', cantidad_componentes_ppales2))
+
+# La imagen original pesa 139kB
+# La imagen con 40 componentes principales pesa 45kB
+# La imagen con 10 componentes principales pesa 30.9kB
+
+# Es claro cómo comprime el tamaño de la imagen la técnica de PCA.
+
+### Parte A – Mover objetos
+
+## 1) Opción1: Elegir una imagen pública de formato jpg. No pueden aparecer personas en la imagen
+##    y la misma debe respetar los principios éticos y de confidencialidad básicos. No utilizar
+##    imágenes usadas en clase. Mostrar la imagen e indicar la página web origen.
+##    Opción 2: Dibujar una imagen con Paint o similar. La misma debe respetar los principios
+##    éticos y de confidencialidad básicos.
+
+# La imagen es creada por mi en Paint, mi mejor intento de dibujar un gatito!
+gatito = readJPEG("data/imagenes/gatito.jpg")
+x11() ; plot(as.raster(gatito))
+
+## 2) Segmentar la imagen para separar un objeto. Mostrar la imagen segmentada.
+
+rojo = as.vector(gatito[,,1])
+verde = as.vector(gatito[,,2])
+azul = as.vector(gatito[,,3])
+base = data.frame(rojo,verde,azul)
+
+# Hago la segmentación
+clusters = 3
+set.seed(8293) ; km = kmeans(base,clusters)
+
+# Reconstruyo la imagen segmentada
+segmR = rojo
+segmV = verde
+segmA = azul
+
+# Cluster 1 - La cara del gatito
+segmR[km$cluster==1] = 1
+segmV[km$cluster==1] = 0
+segmA[km$cluster==1] = 0
+
+# Cluster 2 - Los ojos, las orejas y la boca
+segmR[km$cluster==2] = 0
+segmV[km$cluster==2] = 1
+segmA[km$cluster==2] = 0
+
+# Cluster 3 - El fondo
+segmR[km$cluster==3] = 0
+segmV[km$cluster==3] = 0
+segmA[km$cluster==3] = 1
+
+segmentada = imagen
+segmentada[,,1] = segmR
+segmentada[,,2] = segmV
+segmentada[,,3] = segmA
+
+# Muestro la imagen segmentada
+x11() ; plot(as.raster(segmentada))
+
+# Si quiero separar al gatito del fondo, tengo que pintar a todos los clusters que pertenezcan
+# al gato del mismo color
+
+# Cluster 1 - La cara del gatito
+segmR[km$cluster==1] = 1
+segmV[km$cluster==1] = 1
+segmA[km$cluster==1] = 0
+
+# Cluster 2 - Los ojos, las orejas y la boca
+segmR[km$cluster==2] = 1
+segmV[km$cluster==2] = 1
+segmA[km$cluster==2] = 0
+
+# Cluster 3 - El fondo
+segmR[km$cluster==3] = 0
+segmV[km$cluster==3] = 0
+segmA[km$cluster==3] = 1
+
+segmentada = imagen
+segmentada[,,1] = segmR
+segmentada[,,2] = segmV
+segmentada[,,3] = segmA
+
+# Muestro la imagen segmentada
+x11() ; plot(as.raster(segmentada))
+
+## 3) Mover un objeto de la imagen y mostrar la imagen con el objeto movido.
