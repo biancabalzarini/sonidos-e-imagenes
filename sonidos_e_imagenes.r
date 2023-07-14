@@ -247,3 +247,63 @@ x11() ; spectro(speech, flim=c(0,3), osc=T) ; title(main="Habla")
 ##    respetar los principios éticos y de confidencialidad básicos. No utilizar imágenes usadas en clase.
 ##    Mostrar la imagen e indicar la página web origen.
 
+library(jpeg)
+
+# La imagen fue sacada de:
+# https://www.bbc.com/mundo/noticias-55481251
+imagen = readJPEG("data/imagenes/space.jpg")
+x11() ; plot(as.raster(imagen))
+dim(imagen)
+
+## 2) ¿Cuáles son las dimensiones de la imagen?
+
+dim(imagen)
+# La imagen tiene dimensiones 549x976x3.
+
+## 3) Realizar un PCA de la imagen.
+
+r = imagen[,,1] # Rojo
+v = imagen[,,2] # Verde
+a = imagen[,,3] # Azul
+base = data.frame(r,v,a)
+dim(imagen)
+dim(base)
+pca = prcomp(base, center=FALSE)
+
+# Tomo las primeras  componentes ppales y vuelvo a pasar al espacio original
+cantidad_componentes_ppales = 30
+original = pca$x[,1:cantidad_componentes_ppales]%*%t(pca$rotation[,1:cantidad_componentes_ppales])
+# Normalizo los valores de 0 a 1 porque me quedaron fuera de rango
+originalN = ( original - min(original) ) / ( max(original) - min(original) )
+dim(original)
+originalI = array(originalN, dim=c(549, 976, 3))
+
+# Muestro las dos imágenes, la original y la de las componentes principales
+x11() ; plot(as.raster(originalI)) ; title(sprintf("Imagen con %d componentes ppales", cantidad_componentes_ppales))
+x11() ; plot(as.raster(imagen)) ; title("Imagen original")
+
+## 4) Reconstruir la imagen usando 2 cantidades de componentes principales y mostrar ambas imágenes.
+
+# Tomo las primeras 40 componentes ppales y vuelvo a pasar al espacio original
+cantidad_componentes_ppales = 40
+original = pca$x[,1:cantidad_componentes_ppales]%*%t(pca$rotation[,1:cantidad_componentes_ppales])
+# Normalizo los valores de 0 a 1 porque me quedaron fuera de rango
+originalN = ( original - min(original) ) / ( max(original) - min(original) )
+dim(original)
+originalI = array(originalN, dim=c(549, 976, 3))
+
+# Repito exactamente lo mismo pero con 10 componentes ppales
+cantidad_componentes_ppales2 = 10
+original2 = pca$x[,1:cantidad_componentes_ppales2]%*%t(pca$rotation[,1:cantidad_componentes_ppales2])
+# Normalizo los valores de 0 a 1 porque me quedaron fuera de rango
+original2N = ( original2 - min(original2) ) / ( max(original2) - min(original2) )
+dim(original2)
+original2I = array(original2N, dim=c(549, 976, 3))
+
+# Muestro las tres imágenes, la original y las dos PCA
+x11() ; plot(as.raster(originalI)) ; title(sprintf("Imagen con %d componentes ppales", cantidad_componentes_ppales))
+x11() ; plot(as.raster(original2I)) ; title(sprintf("Imagen con %d componentes ppales", cantidad_componentes_ppales2))
+x11() ; plot(as.raster(imagen)) ; title("Imagen original")
+
+## 5) Grabar las 2 nuevas imágenes y comparar su peso de almacenamiento con respecto al de la imagen original.
+
