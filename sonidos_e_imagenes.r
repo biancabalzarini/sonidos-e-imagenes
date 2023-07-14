@@ -1,12 +1,16 @@
-library(seewave)
-library(tuneR)
 
 #### Ejercicio 1 – Sonido
+
+# En este ejercicio se comparan 3 tipos de sonido con diferentes técnicas:
+# oscilograma, periodograma y espectrograma con las librerías de R seewave y tuneR.
 
 ### Parte A – Metadata
 
 ## 1) Levantar en R 3 sonidos
 ## 2) Muestre la página web origen de cada sonido y explique brevemente dequé trata. En el caso de habla, indique cuál frase se dice.
+
+library(seewave)
+library(tuneR)
 
 # Sonido de un instrumento musical
 # Tomo el sonido de un tambor
@@ -223,4 +227,23 @@ x11() ; spectro(speech, flim=c(0,3), osc=T) ; title(main="Habla")
 # golpe. Las frecuencias son bajas porque es un sonido grave.
 
 # El espectrograma del pájaro muestra frecuencias mucho más altas, lo cual tiene sentido porque
-# el canto es muy agudo. ### SEGUIIIRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+# el canto es muy agudo. Se ven sonidos de corta duración, cada uno muy bien separado del anterior.
+# Estos serían cada uno de los "tweets" del pájaro. Esto se diferencia mucho de otro tipo de ruidos
+# ambiente, como puede ser la lluvia, donde no hay sonidos delimitados sino que el espectrograma es
+# una gran mancha contínua sin silencios.
+
+# El espectrograma del habla también está bastante centrado en frecuencias bajas. El hombre tiene una
+# voz más bien grave. Se pueden ver algunos silencios, similar al pájaro, pero mucho menos delimitados.
+# Comparado al pájaro, el sonido es más contínuo.
+
+#### Ejercicio 1 – Imágenes
+
+# En este ejercicio se realizan aplicaciones de Machine Learning en imágenes con R.
+# Primero se analiza un Análisis de Componentes Principales y luego una Segmentación.
+
+### Parte A – PCA
+
+## 1) Elegir una imagen pública de formato jpg. No pueden aparecer personas en la imagen y la misma debe
+##    respetar los principios éticos y de confidencialidad básicos. No utilizar imágenes usadas en clase.
+##    Mostrar la imagen e indicar la página web origen.
+
