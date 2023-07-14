@@ -307,3 +307,5 @@ x11() ; plot(as.raster(imagen)) ; title("Imagen original")
 
 ## 5) Grabar las 2 nuevas imágenes y comparar su peso de almacenamiento con respecto al de la imagen original.
 
+writeJPEG(originalI,sprintf('data/imagenes/imagen_%d_comp_ppales.jpeg', cantidad_componentes_ppales))
+writeJPEG(original2I,sprintf('data/imagenes/imagen_%d_comp_ppales.jpeg', cantidad_componentes_ppales2))
