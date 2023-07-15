@@ -337,29 +337,32 @@ base = data.frame(rojo,verde,azul)
 
 # Hago la segmentación
 clusters = 3
-set.seed(8293) ; km = kmeans(base,clusters)
-
+set.seed(313) ; km = kmeans(base,clusters)
+#8293
 # Reconstruyo la imagen segmentada
 segmR = rojo
 segmV = verde
 segmA = azul
 
-# Cluster 1 - La cara del gatito
+# Cluster 1 - El fondo
+# Queda pintada de rojo
 segmR[km$cluster==1] = 1
 segmV[km$cluster==1] = 0
 segmA[km$cluster==1] = 0
 
 # Cluster 2 - Los ojos, las orejas y la boca
+# Quedan pintados de verde
 segmR[km$cluster==2] = 0
 segmV[km$cluster==2] = 1
 segmA[km$cluster==2] = 0
 
-# Cluster 3 - El fondo
+# Cluster 3 - La cara del gatito
+# Queda pintado de azul
 segmR[km$cluster==3] = 0
 segmV[km$cluster==3] = 0
 segmA[km$cluster==3] = 1
 
-segmentada = imagen
+segmentada = gatito
 segmentada[,,1] = segmR
 segmentada[,,2] = segmV
 segmentada[,,3] = segmA
@@ -370,9 +373,9 @@ x11() ; plot(as.raster(segmentada))
 # Si quiero separar al gatito del fondo, tengo que pintar a todos los clusters que pertenezcan
 # al gato del mismo color
 
-# Cluster 1 - La cara del gatito
+# Cluster 1 - El fondo
 segmR[km$cluster==1] = 1
-segmV[km$cluster==1] = 1
+segmV[km$cluster==1] = 0
 segmA[km$cluster==1] = 0
 
 # Cluster 2 - Los ojos, las orejas y la boca
@@ -380,12 +383,12 @@ segmR[km$cluster==2] = 1
 segmV[km$cluster==2] = 1
 segmA[km$cluster==2] = 0
 
-# Cluster 3 - El fondo
-segmR[km$cluster==3] = 0
-segmV[km$cluster==3] = 0
-segmA[km$cluster==3] = 1
+# Cluster 3 - La cara del gatito
+segmR[km$cluster==3] = 1
+segmV[km$cluster==3] = 1
+segmA[km$cluster==3] = 0
 
-segmentada = imagen
+segmentada = gatito
 segmentada[,,1] = segmR
 segmentada[,,2] = segmV
 segmentada[,,3] = segmA
@@ -394,3 +397,56 @@ segmentada[,,3] = segmA
 x11() ; plot(as.raster(segmentada))
 
 ## 3) Mover un objeto de la imagen y mostrar la imagen con el objeto movido.
+
+# Cluster 1 es fondo - Muevo Clusters 1 y 2
+
+adelante = function(x){
+  segmR = rojo
+  segmV = verde
+  segmA = azul
+  
+  # Reconstruimos km$cluster
+  
+  imagenCl = array(km$cluster, dim=c(dim(gatito)[1],dim(gatito)[2]))
+  imagenClusterOrig = imagenCl
+  
+  for(i in c(5:(dim(gatito)[1]-5))){
+    for(j in c(5:(dim(gatito)[2]-5))){
+      if(imagenCl[i,j]==2){imagenCl[i,j]=1;imagenCl[i,j+x]=4}
+      if(imagenCl[i,j]==3){imagenCl[i,j]=1;imagenCl[i,j+x]=5}
+    }}
+
+  for(i in c(5:(dim(gatito)[1]-5))){
+    for(j in c(5:(dim(gatito)[2]-5))){
+      if(imagenCl[i,j]==4){imagenCl[i,j]=2}
+      if(imagenCl[i,j]==5){imagenCl[i,j]=3}
+    }}
+
+  km$cluster = as.vector(imagenCl)
+  km$clusterOrig = as.vector(imagenClusterOrig)
+  
+  # Fondo
+  segmR[km$cluster==1] = rojo[km$clusterOrig==1]
+  segmV[km$cluster==1] = verde[km$clusterOrig==1]
+  segmA[km$cluster==1] = azul[km$clusterOrig==1]
+  
+  # Los ojos, las orejas y la boca
+  segmR[km$cluster==2] = rojo[km$clusterOrig==2]
+  segmV[km$cluster==2] = verde[km$clusterOrig==2]
+  segmA[km$cluster==2] = azul[km$clusterOrig==2]
+  
+  # La cara del gatito
+  segmR[km$cluster==3] = rojo[km$clusterOrig==3]
+  segmV[km$cluster==3] = verde[km$clusterOrig==3]
+  segmA[km$cluster==3] = azul[km$clusterOrig==3]
+  
+  segmentada = gatito
+  segmentada[,,1] = segmR
+  segmentada[,,2] = segmV
+  segmentada[,,3] = segmA
+
+  x11() ; plot(as.raster(segmentada))
+}
+
+x11() ; plot(as.raster(gatito)) # Gatito original
+adelante(400) # Muevo al gatito 400 pixeles hacia la derecha
