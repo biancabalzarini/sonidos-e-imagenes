@@ -155,12 +155,12 @@ x11() ; spectro(speech, flim=c(0,3), osc=T) ; title(main="Habla")
 ##    Muestre el espectrograma resultante de cada sonido filtrado.
 
 # Pasa bajo
-drumPB = ffilter(bird, to=200, output="Wave")
+drumPB = ffilter(drum, to=200, output="Wave")
 drumPB = normalize(drumPB, unit='16')
 x11() ; spectro(drumPB, flim=c(0,0.5)) ; title(main = "Tambor con filtro pasa bajos")
 
 # Pasa alto
-drumPA = ffilter(bird, from=200, output="Wave")
+drumPA = ffilter(drum, from=200, output="Wave")
 drumPA = normalize(drumPA, unit='16')
 x11() ; spectro(drumPA, flim=c(0,0.5)) ; title(main = "Tambor con filtro pasa altos")
 
@@ -189,7 +189,7 @@ speech_cortado = window(speech, start = 76000, end = 95000)
 play(speech_cortado)
 x11() ; spectro(speech_cortado, flim=c(0,3), osc=T) ; title(main="Habla (cortado)")
 # La palabra "diamantes" es todo un contínuo en el espectrograma.
-# Antes del la "p" del "por" se ve claramente un silencio.
+# Antes de la "p" del "por" se ve claramente un silencio.
 # Después del "por" hay otro claro silencio, para que aparezca al final el "una".
 
 
@@ -200,13 +200,13 @@ x11() ; spectro(speech_cortado, flim=c(0,3), osc=T) ; title(main="Habla (cortado
 speech_cortado = window(speech, start = 76000, end = 95000)
 play(speech_cortado)
 x11() ; spectro(speech_cortado, flim=c(0,3), osc=T) ; title(main="Habla (cortado)")
-# Antes y después de la palabra "por" se ven claramente lo silencios.
+# Antes y después de la palabra "por" se ven claramente los silencios.
 
 # Frase "una gallina"
 speech_cortado = window(speech, start = 92000, end = 107000)
 play(speech_cortado)
 x11() ; spectro(speech_cortado, flim=c(0,3), osc=T) ; title(main="Habla (cortado)")
-# Antes de la "g" de gallina se un silencio.
+# Antes de la "g" de gallina se ve un silencio.
 
 # Palabra "esto"
 speech_cortado = window(speech, start = 8500, end = 14100)
@@ -214,7 +214,7 @@ play(speech_cortado)
 x11() ; spectro(speech_cortado, flim=c(0,3), osc=T) ; title(main="Habla (cortado)")
 # Esto es interesante porque es solamente la palabra "esto", y se ve claramente un silencio entre
 # "es" y "to" por la consonante "t". La boca tiene que posicionarse para pronunciar la consonante
-# explosiva "t", y por eso se produce ese silencio que es impercetible por el oído.
+# explosiva "t", y por eso se produce ese silencio que es imperceptible por el oído.
 
 ## 4) Compare los 3 espectrogramas y saque alguna conclusión.
 
@@ -222,7 +222,7 @@ x11() ; spectro(drum, flim=c(0,0.5), osc=T) ; title(main="Tambor")
 x11() ; spectro(bird, flim=c(2,8), osc=T) ; title(main="Pájaro")
 x11() ; spectro(speech, flim=c(0,3), osc=T) ; title(main="Habla")
 
-# En el espectrogrma del tambor se ve claramente cada uno de los golpes del tambor, por ser un
+# En el espectrograma del tambor se ve claramente cada uno de los golpes del tambor, por ser un
 # sonido explosivo. El golpe es muy fuerte y luego decae con el tiempo, hasta que llega el próximo
 # golpe. Las frecuencias son bajas porque es un sonido grave.
 
@@ -345,7 +345,7 @@ segmV = verde
 segmA = azul
 
 # Cluster 1 - El fondo
-# Queda pintada de rojo
+# Queda pintado de rojo
 segmR[km$cluster==1] = 1
 segmV[km$cluster==1] = 0
 segmA[km$cluster==1] = 0
@@ -357,7 +357,7 @@ segmV[km$cluster==2] = 1
 segmA[km$cluster==2] = 0
 
 # Cluster 3 - La cara del gatito
-# Queda pintado de azul
+# Queda pintada de azul
 segmR[km$cluster==3] = 0
 segmV[km$cluster==3] = 0
 segmA[km$cluster==3] = 1
@@ -370,23 +370,17 @@ segmentada[,,3] = segmA
 # Muestro la imagen segmentada
 x11() ; plot(as.raster(segmentada))
 
-# Si quiero separar al gatito del fondo, tengo que pintar a todos los clusters que pertenezcan
-# al gato del mismo color
+# Si quiero separar al gatito del fondo, tengo que dejar a los clusters 2 y 3 como son en la
+# imagen original, y pintar al fondo de otro color.
+
+segmR = rojo
+segmV = verde
+segmA = azul
 
 # Cluster 1 - El fondo
 segmR[km$cluster==1] = 1
 segmV[km$cluster==1] = 0
 segmA[km$cluster==1] = 0
-
-# Cluster 2 - Los ojos, las orejas y la boca
-segmR[km$cluster==2] = 1
-segmV[km$cluster==2] = 1
-segmA[km$cluster==2] = 0
-
-# Cluster 3 - La cara del gatito
-segmR[km$cluster==3] = 1
-segmV[km$cluster==3] = 1
-segmA[km$cluster==3] = 0
 
 segmentada = gatito
 segmentada[,,1] = segmR
@@ -398,7 +392,7 @@ x11() ; plot(as.raster(segmentada))
 
 ## 3) Mover un objeto de la imagen y mostrar la imagen con el objeto movido.
 
-# Cluster 1 es fondo - Muevo Clusters 1 y 2
+# Cluster 1 es fondo - Muevo Clusters 2 y 3
 
 adelante = function(x){
   segmR = rojo
